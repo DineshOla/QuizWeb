@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Quiz App - Easy Tutorials</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+    <div class="app">
+        <h1>Simple Quiz</h1>
+        <div class="quiz">
+            <h2 id="question">Question goes here</h2>
+            <div id="answer-buttons">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>
+           <pre>  <button id="previous-btn">Previous</button>    <button id="next-btn">Next</button>  </pre>
+            
+            
+            
+        </div>
+    </div>
+    <script>
+        const questions = [
+    {
+        question: "_____rich should help_____poor?",
+        answers: [
+            { text: "a,an ", correct: false},
+            { text: "an,the ", correct: false},
+            { text: "the,the ", correct: true},
+            { text: "a,the ", correct: false},
+        ]
+    },
+
+    {
+        question: "he is______richest man in the town?",
+        answers:[
+            { text: "a", correct: false},
+            { text: "an ", correct: false},
+            { text: " none of these", correct: false},
+            { text: "the ", correct: true},
+        ]
+
+    },
+
+    {
+        question: "This road leads to_____Agra?",
+        answers:[
+            { text: "none of these", correct:  true},
+            { text: " an ", correct: false},
+            { text: " a ", correct: false},
+            { text: " the ", correct:  false},
+        ]
+    },
+
+    {
+        question: "You would like______apple or_____banana?",
+        answers:[
+            { text: " a,an ", correct: false},
+            { text: " an,the ", correct: false},
+            { text: " an,a ", correct: true},
+            { text: " the,an ", correct: false},
+        ]
+    },
+
+    {
+        question: " He gave me_____five rupee note?",
+        answers:[
+            { text: " the", correct: false},
+            { text: "an ", correct: false},
+            { text: " a", correct: true},
+            { text: "none of these", correct: false},
+        ]
+    }
+];const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function startQuiz(){
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next";
+    showQuestion();
+}
+
+function showQuestion(){
+    resetState();
+    let currentQuestion = questions[currentQuestionIndex];
+    let questionNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = questionNo + "." +currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerHTML = answer.text;
+        button.classList.add("btn");
+        answerButtons.appendChild(button);
+        if(answer.correct){
+            button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+    });
+}
+
+function resetState(){
+    nextButton.style.display = "none";
+    while(answerButtons.firstChild){
+        answerButtons.removeChild(answerButtons.firstChild);
+    }
+}
+
+function selectAnswer(e){
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+    if(isCorrect){
+        selectedBtn.classList.add("correct");
+        score++;
+    }else{
+        selectedBtn.classList.add("incorrect");
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if(button.dataset.correct === "true"){
+            button.classList.add("correct");
+        }
+        button.disabled = true;
+    });
+    nextButton.style.display = "block";
+}
+
+function showScore(){
+    resetState();
+    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+    nextButton.innerHTML = "Play Again";
+    nextButton.style.display.display = "block";
+}
+
+function handleNextButton(){
+    currentQuestionIndex++;
+    if(currentQuestionIndex < questions.length){
+        showQuestion();
+    }else{
+        showScore();
+    }
+}
+
+
+nextButton.addEventListener("click",()=>{
+    if(currentQuestionIndex < questions.length){
+        handleNextButton();
+    }else{
+        startQuiz();
+    }
+
+});
+startQuiz();
+
+</script>
+
+</body>
+</html>

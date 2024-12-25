@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Quiz App - Easy Tutorials</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+    <div class="app">
+        <h1>Simple Quiz</h1>
+        <div class="quiz">
+            <h2 id="question">Question goes here</h2>
+            <div id="answer-buttons">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>
+           <pre>      <button id="next-btn">Next</button>  </pre>
+            
+            
+            
+        </div>
+    </div>
+    <script>
+        const questions = [
+    {
+        question: "The doctor will examine him tomorrow.(Choose the suitable passive voice)",
+        answers: [
+            { text: "He examined by the doctor tomorrow. ", correct: false},
+            { text: "  He has the doctor examine him tomorrow.", correct: false},
+            { text: " He will be examined by the doctor tomorrow.", correct: true},
+            { text: "He may be examine at the doctor tomorrow.", correct: false},
+        ]
+    },
+
+    {
+        question: "He was given a prize by the teacher.(Choose the suitable active voice)",
+        answers:[
+            { text: "The teacher may have given him a prize.", correct: false},
+            { text: "The teacher will have given him a prize. ", correct: false},
+            { text: "The teacher has give him a prize. ", correct: false},
+            { text: "The teacher gave him a prize. ", correct: true},
+        ]
+
+    },
+
+    {
+        question: "Why do you tell a lie? (Choose the best passive voice)",
+        answers:[
+            { text: "Why is a lie told by you?", correct:  true},
+            { text: " Why a lie is told by you?. ", correct: false},
+            { text: " Why is a lie be told by you?  ", correct: false},
+            { text: " Why is a lie being told by you ", correct:  false},
+        ]
+    },
+
+    {
+        question: "The windows have been cleaned.  (Choose the best active voice)",
+        answers:[
+            { text: " Someone may clean the windows. ", correct: false},
+            { text: " Someone had cleaned the windows. ", correct: false},
+            { text: " Someone has cleaned the windows. ", correct: true},
+            { text: " Someone will clean the windows. ", correct: false},
+        ]
+    },
+
+    {
+        question: " The room will be cleaned by Ramu.(Choose the correct active voice)",
+        answers:[
+            { text: "Ramu had cleaned the room. ", correct: false},
+            { text: "Ramu was to cleaned the room. ", correct: false},
+            { text: "Ramu will clean the room. ", correct: true},
+            { text: "Ramu will to clean the room. ", correct: false},
+        ]
+    }
+];
+const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function startQuiz(){
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next";
+    showQuestion();
+}
+
+function showQuestion(){
+    resetState();
+    let currentQuestion = questions[currentQuestionIndex];
+    let questionNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = questionNo + "." +currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerHTML = answer.text;
+        button.classList.add("btn");
+        answerButtons.appendChild(button);
+        if(answer.correct){
+            button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+    });
+}
+
+function resetState(){
+    nextButton.style.display = "none";
+    while(answerButtons.firstChild){
+        answerButtons.removeChild(answerButtons.firstChild);
+    }
+}
+
+function selectAnswer(e){
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+    if(isCorrect){
+        selectedBtn.classList.add("correct");
+        score++;
+    }else{
+        selectedBtn.classList.add("incorrect");
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if(button.dataset.correct === "true"){
+            button.classList.add("correct");
+        }
+        button.disabled = true;
+    });
+    nextButton.style.display = "block";
+}
+
+function showScore(){
+    resetState();
+    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+    nextButton.innerHTML = "Play Again";
+    nextButton.style.display.display = "block";
+}
+
+function handleNextButton(){
+    currentQuestionIndex++;
+    if(currentQuestionIndex < questions.length){
+        showQuestion();
+    }else{
+        showScore();
+    }
+}
+
+
+nextButton.addEventListener("click",()=>{
+    if(currentQuestionIndex < questions.length){
+        handleNextButton();
+    }else{
+        startQuiz();
+    }
+
+});
+startQuiz();
+
+</script>
+
+</body>
+</html>
