@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Quiz App - Easy Tutorials</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <h1>Simple Quiz</h1>
+        <div class="quiz">
+            <h2 id="question">Question goes here</h2>
+            <div id="answer-buttons">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>
+            <button id="next-btn">Next</button>
+        </div>
+    </div>
+    <script>
+        const questions = [
+    {
+        question: "Which one of the following components is known as the brain of a computer?",
+        answers: [
+            { text: "Monitor ", correct: false},
+            { text: " Keyboard", correct: false},
+            { text: "CPU", correct: true},
+            { text: "Hard Disk ", correct: false},
+        ]
+    },
+
+    {
+        question: "Which of these is a painting software?",
+        answers:[
+            { text: "MS Excel", correct: false},
+            { text: "MS Word", correct: false},
+            { text: "Megabyte", correct: false},
+            { text: "MS Paint", correct: true},
+        ]
+
+    },
+
+    {
+        question: "What do the initials CD stand for?",
+        answers:[
+            { text: "Compact Disc", correct:  true},
+            { text: " Computer Disc ", correct: false},
+            { text: "Compressed Disc", correct: false},
+            { text: "Coloured Disc ", correct:  false},
+        ]
+    },
+
+    {
+        question: "Who invented the first mechanical computer?",
+        answers:[
+            { text: " Benjamin Franklin ", correct: false},
+            { text: "Blaise Pascal  ", correct: false},
+            { text: " Charles Babbage ", correct: true},
+            { text: " None of the above ", correct: false},
+        ]
+    },
+
+    {
+        question: "What does the CPU in a computer stand for?",
+        answers:[
+            { text: "Call Processing Unit ", correct: false},
+            { text: "Control Processing Unit", correct: false},
+            { text: " Central Processing Unit", correct: true},
+            { text: "Copy Processing Unit", correct: false},
+        ]
+    }
+];
+const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function startQuiz(){
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next";
+    showQuestion();
+}
+
+function showQuestion(){
+    resetState();
+    let currentQuestion = questions[currentQuestionIndex];
+    let questionNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = questionNo + "." +currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerHTML = answer.text;
+        button.classList.add("btn");
+        answerButtons.appendChild(button);
+        if(answer.correct){
+            button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+    });
+}
+
+function resetState(){
+    nextButton.style.display = "none";
+    while(answerButtons.firstChild){
+        answerButtons.removeChild(answerButtons.firstChild);
+    }
+}
+
+function selectAnswer(e){
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+    if(isCorrect){
+        selectedBtn.classList.add("correct");
+        score++;
+    }else{
+        selectedBtn.classList.add("incorrect");
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if(button.dataset.correct === "true"){
+            button.classList.add("correct");
+        }
+        button.disabled = true;
+    });
+    nextButton.style.display = "block";
+}
+
+function showScore(){
+    resetState();
+    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+    nextButton.innerHTML = "Play Again";
+    nextButton.style.display.display = "block";
+}
+
+function handleNextButton(){
+    currentQuestionIndex++;
+    if(currentQuestionIndex < questions.length){
+        showQuestion();
+    }else{
+        showScore();
+    }
+}
+
+
+nextButton.addEventListener("click",()=>{
+    if(currentQuestionIndex < questions.length){
+        handleNextButton();
+    }else{
+        startQuiz();
+    }
+
+});
+startQuiz();
+
+
+
+    </script>
+</body>
+</html>

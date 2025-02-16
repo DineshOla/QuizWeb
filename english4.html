@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Quiz App - Easy Tutorials</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+    <div class="app">
+        <h1>Simple Quiz</h1>
+        <div class="quiz">
+            <h2 id="question">Question goes here</h2>
+            <div id="answer-buttons">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>
+           <pre>  <button id="previous-btn">Previous</button>    <button id="next-btn">Next</button>  </pre>
+            
+            
+            
+        </div>
+    </div>
+    <script>
+        const questions = [
+    {
+        question: "An animal with a long tail is ?",
+        answers: [
+            { text: " Tiger", correct: false},
+            { text: "Dog ", correct: false},
+            { text: " Monkey", correct: true},
+            { text: "Cat ", correct: false},
+        ]
+    },
+
+    {
+        question: "A bird with red beak and green body is –?",
+        answers:[
+            { text: "Crow", correct: false},
+            { text: " Sparrow", correct: false},
+            { text: "Pigeon ", correct: false},
+            { text: " Parrot", correct: true},
+        ]
+
+    },
+
+    {
+        question: "A place where we go. When we fall sick ?",
+        answers:[
+            { text: "Hospital", correct:  true},
+            { text: " Parlour ", correct: false},
+            { text: " Park ", correct: false},
+            { text: " Zoo  ", correct:  false},
+        ]
+    },
+
+    {
+        question: "It is an electronic device?",
+        answers:[
+            { text: " Soap ", correct: false},
+            { text: " Teddy bear ", correct: false},
+            { text: " Mobile ", correct: true},
+            { text: " Pen ", correct: false},
+        ]
+    },
+
+    {
+        question: "Plural of a cup will be ?",
+        answers:[
+            { text: "Cupes ", correct: false},
+            { text: " Cupss", correct: false},
+            { text: " Cups", correct: true},
+            { text: "Cupees ", correct: false},
+        ]
+    }
+];const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function startQuiz(){
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next";
+    showQuestion();
+}
+
+function showQuestion(){
+    resetState();
+    let currentQuestion = questions[currentQuestionIndex];
+    let questionNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = questionNo + "." +currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerHTML = answer.text;
+        button.classList.add("btn");
+        answerButtons.appendChild(button);
+        if(answer.correct){
+            button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+    });
+}
+
+function resetState(){
+    nextButton.style.display = "none";
+    while(answerButtons.firstChild){
+        answerButtons.removeChild(answerButtons.firstChild);
+    }
+}
+
+function selectAnswer(e){
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+    if(isCorrect){
+        selectedBtn.classList.add("correct");
+        score++;
+    }else{
+        selectedBtn.classList.add("incorrect");
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if(button.dataset.correct === "true"){
+            button.classList.add("correct");
+        }
+        button.disabled = true;
+    });
+    nextButton.style.display = "block";
+}
+
+function showScore(){
+    resetState();
+    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+    nextButton.innerHTML = "Play Again";
+    nextButton.style.display.display = "block";
+}
+
+function handleNextButton(){
+    currentQuestionIndex++;
+    if(currentQuestionIndex < questions.length){
+        showQuestion();
+    }else{
+        showScore();
+    }
+}
+
+
+nextButton.addEventListener("click",()=>{
+    if(currentQuestionIndex < questions.length){
+        handleNextButton();
+    }else{
+        startQuiz();
+    }
+
+});
+startQuiz();
+
+</script>
+
+</body>
+</html>
